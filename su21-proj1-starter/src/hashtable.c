@@ -40,6 +40,25 @@ void insertData(HashTable *table, void *key, void *data) {
   // 1. Find the right hash bucket location with table->hashFunction.
   // 2. Allocate a new hash bucket struct.
   // 3. Append to the linked list or create it if it does not yet exist. 
+  int location = table->hashFunction(key) % table->size;
+  HashBucket *newBucket = malloc(sizeof(HashBucket));
+  newBucket->key = key;
+  newBucket->data = data;
+  newBucket->next = NULL;
+  if (table->data[location] == NULL) {
+      table->data[location] = newBucket;
+      return;
+  }
+  HashBucket *prev = table->data[location];
+  for(HashBucket *curr = table->data[location]; curr != NULL; curr = prev->next) {
+    if (curr->key == key) {
+        curr->data = data;
+        free(newBucket);
+        return;
+    }
+    prev = prev->next;
+  }
+  prev->next = newBucket;
 }
 
 /*
