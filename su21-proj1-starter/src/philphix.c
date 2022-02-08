@@ -69,10 +69,14 @@ int main(int argc, char **argv) {
  */
 unsigned int stringHash(void *s) {
   // -- TODO --
-  fprintf(stderr, "need to implement stringHash\n");
-
+  //fprintf(stderr, "need to implement stringHash\n");
   /* To suppress compiler warning until you implement this function, */
-  return 0;
+  unsigned int hashNumber = 0;
+  while (s != NULL) {
+      hashNumber = hashNumber + *s;
+      s = s + 1;
+  }
+  return hashNumber;
 }
 
 /*
@@ -81,9 +85,19 @@ unsigned int stringHash(void *s) {
  */
 int stringEquals(void *s1, void *s2) {
   // -- TODO --
-  fprintf(stderr, "You need to implement stringEquals");
+  //fprintf(stderr, "You need to implement stringEquals");
   /* To suppress compiler warning until you implement this function */
-  return 0;
+  while (*s1 != NULL && *s2 != NULL) {
+      if (*s1 != *s2) {
+          return 0;
+      }
+      s1 = s1 + 1;
+      s2 = s2 + 1;
+  }
+  if (*s1 != *s2) {
+      return 0;
+  }
+  return 1;
 }
 
 /*
@@ -100,7 +114,30 @@ int stringEquals(void *s1, void *s2) {
  */
 void readDictionary(char *dictName) {
   // -- TODO --
-  fprintf(stderr, "You need to implement readDictionary\n");
+  //fprintf(stderr, "You need to implement readDictionary\n");
+
+  //open file
+  FILE *fp;
+  fp = fopen(dictName, "r");
+  if (fp == NULL) {
+      fprintf(stderr, "Can not open dict.\n");
+  }
+  //process word
+  char *string1;
+  char *string2;
+  fscanf(fp, "%s", string1);
+  int status = fscanf(fp, "%s", string2);
+  while (status != EOF){
+      char *key = malloc(sizeof(char) * (strlen(string1)+1));
+      char *data = malloc(sizeof(char) * (strlen(string2)+1));
+      strcpy(key, string1);
+      strcpy(data, string2);
+      inserData(dictionary, key, data);
+      fscanf(fp, "%s", string1);
+      status = fscanf(fp, "%s", string2);
+  } 
+  //close file
+  fclose(fp);
 }
 
 /*
