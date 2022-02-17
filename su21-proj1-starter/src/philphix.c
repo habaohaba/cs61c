@@ -68,13 +68,13 @@ int main(int argc, char **argv) {
  * to a char * (null terminated string)
  */
 unsigned int stringHash(void *s) {
-  // -- TODO --
   //fprintf(stderr, "need to implement stringHash\n");
   /* To suppress compiler warning until you implement this function, */
   unsigned int hashNumber = 0;
-  while (s != NULL) {
-      hashNumber = hashNumber + *s;
-      s = s + 1;
+  char *c = s;
+  while (*c != NULL) {
+      hashNumber = hashNumber + *c;
+      c = c + 1;
   }
   return hashNumber;
 }
@@ -84,17 +84,18 @@ unsigned int stringHash(void *s) {
  * (case sensitive comparison) and 0 otherwise.
  */
 int stringEquals(void *s1, void *s2) {
-  // -- TODO --
   //fprintf(stderr, "You need to implement stringEquals");
   /* To suppress compiler warning until you implement this function */
-  while (*s1 != NULL && *s2 != NULL) {
-      if (*s1 != *s2) {
+  char *c1 = s1;
+  char *c2 = s2;
+  while (*c1 != NULL && *c2 != NULL) {
+      if (*c1 != *c2) {
           return 0;
       }
-      s1 = s1 + 1;
-      s2 = s2 + 1;
+      c1 = c1 + 1;
+      c2 = c2 + 1;
   }
-  if (*s1 != *s2) {
+  if (*c1 != *c2) {
       return 0;
   }
   return 1;
@@ -121,10 +122,11 @@ void readDictionary(char *dictName) {
   fp = fopen(dictName, "r");
   if (fp == NULL) {
       fprintf(stderr, "Can not open dict.\n");
+      exit(61);
   }
   //process word
-  char *string1;
-  char *string2;
+  char string1[60];
+  char string2[60];
   fscanf(fp, "%s", string1);
   int status = fscanf(fp, "%s", string2);
   while (status != EOF){
@@ -132,7 +134,7 @@ void readDictionary(char *dictName) {
       char *data = malloc(sizeof(char) * (strlen(string2)+1));
       strcpy(key, string1);
       strcpy(data, string2);
-      inserData(dictionary, key, data);
+      insertData(dictionary, key, data);
       fscanf(fp, "%s", string1);
       status = fscanf(fp, "%s", string2);
   } 
@@ -163,6 +165,53 @@ void readDictionary(char *dictName) {
  * final bit of your grade, you cannot assume words have a bounded length.
  */
 void processInput() {
-  // -- TODO --
-  fprintf(stderr, "You need to implement processInput\n");
+  //fprintf(stderr, "You need to implement processInput\n");
+  char c;
+  char word[60];
+  int i = 0;
+  while (c = getchar()) {
+    if (isalpha(c)) {
+        word[i] = c;
+        i++;
+    } else {
+        //not alpha
+        word[i] = '\0';
+        if (word[0] != '\0') {
+            //catch a world
+            char tmp[60];
+            char *out;
+            strcpy(tmp, word);
+            //condition one
+            out = findData(dictionary, tmp);
+            if (out != NULL) {
+                fprintf(stdout, "%s", out);
+            } else {
+                //conditoin two
+                tmp[0] = tolower(tmp[0]);
+                out = findData(dictionary, tmp);
+                if (out != NULL) {
+                    fprintf(stdout, "%s", out);
+                } else {
+                    //condition three
+                    for (int j =1; tmp[j] != '\0'; j++) {
+                        tmp[j] = tolower(tmp[j]);
+                    } 
+                    out = findData(dictionary, tmp);
+                    if (out != NULL) {
+                        fprintf(stdout, "%s", out);
+                    } else {
+                    //print same world
+                    fprintf(stdout, "%s", word);
+                    }
+                }
+            }
+        i = 0;
+        if (c != EOF) {
+            putchar(c);
+        } else {
+            break;
+        }
+      }
+    }
+  }
 }

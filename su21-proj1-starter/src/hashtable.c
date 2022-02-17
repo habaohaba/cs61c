@@ -1,7 +1,6 @@
 #include "hashtable.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 
 /*
  * This creates a new hash table of the specified size and with
@@ -42,14 +41,10 @@ void insertData(HashTable *table, void *key, void *data) {
   // 2. Allocate a new hash bucket struct.
   // 3. Append to the linked list or create it if it does not yet exist. 
   int location = table->hashFunction(key) % table->size;
-  //malloc memory size
   HashBucket *newBucket = malloc(sizeof(HashBucket));
-  newBucket->key = malloc(sizeof(void));
-  newBucket->data = malloc(sizeof(char) * (strlen(data) + 1));
-  newBucket->next = malloc(sizeof(HashBucket));
   //set value
-  newBucket->*key = *key;
-  newBucket->data = strcpy(newBucket->data, data);
+  newBucket->key = key;
+  newBucket->data = data;
   newBucket->next = NULL;
   //check if data[location] is empty.
   if (table->data[location] == NULL) {
@@ -60,10 +55,7 @@ void insertData(HashTable *table, void *key, void *data) {
   HashBucket *prev = table->data[location];
   for(HashBucket *curr = table->data[location]; curr != NULL; curr = prev->next) {
     if (table->equalFunction(curr->key, key)) {
-        curr->data = strcpy(curr->data, data);
-        free(newBucket->key);
-        free(newBucket->data);
-        free(newBucket->next);
+        curr->data = data;
         free(newBucket);
         return;
     }
@@ -83,7 +75,7 @@ void *findData(HashTable *table, void *key) {
   // 1. Find the right hash bucket with table->hashFunction.
   // 2. Walk the linked list and check for equality with table->equalFunction.
   int location = table->hashFunction(key) % table->size;
-  for (hashBucket *curr = table->data[location]; curr != NULL; curr = curr->next){
+  for (HashBucket *curr = table->data[location]; curr != NULL; curr = curr->next){
       if(table->equalFunction(curr->key, key)) { 
           return curr->data;
       }
