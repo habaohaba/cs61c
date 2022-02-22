@@ -72,7 +72,7 @@ unsigned int stringHash(void *s) {
   /* To suppress compiler warning until you implement this function, */
   unsigned int hashNumber = 0;
   char *c = s;
-  while (*c != NULL) {
+  while (*c != '\0') {
       hashNumber = hashNumber + *c;
       c = c + 1;
   }
@@ -86,19 +86,13 @@ unsigned int stringHash(void *s) {
 int stringEquals(void *s1, void *s2) {
   //fprintf(stderr, "You need to implement stringEquals");
   /* To suppress compiler warning until you implement this function */
-  char *c1 = s1;
-  char *c2 = s2;
-  while (*c1 != NULL && *c2 != NULL) {
-      if (*c1 != *c2) {
-          return 0;
-      }
-      c1 = c1 + 1;
-      c2 = c2 + 1;
-  }
-  if (*c1 != *c2) {
+  char *c1 = (char *) s1;
+  char *c2 = (char *) s2;
+  if (strcmp(c1, c2) == 0) {
+      return 1;
+  } else {
       return 0;
   }
-  return 1;
 }
 
 /*
@@ -125,8 +119,8 @@ void readDictionary(char *dictName) {
       exit(61);
   }
   //process word
-  char string1[60];
-  char string2[60];
+  char string1[70];
+  char string2[70];
   fscanf(fp, "%s", string1);
   int status = fscanf(fp, "%s", string2);
   while (status != EOF){
@@ -134,6 +128,8 @@ void readDictionary(char *dictName) {
       char *data = malloc(sizeof(char) * (strlen(string2)+1));
       strcpy(key, string1);
       strcpy(data, string2);
+      key[strlen(string1)] = '\0';
+      data[strlen(string2)] = '\0';
       insertData(dictionary, key, data);
       fscanf(fp, "%s", string1);
       status = fscanf(fp, "%s", string2);
@@ -167,9 +163,9 @@ void readDictionary(char *dictName) {
 void processInput() {
   //fprintf(stderr, "You need to implement processInput\n");
   char c;
-  char word[60];
+  char word[70];
   int i = 0;
-  while (c = getchar()) {
+  while ((c = fgetc(stdin)) != EOF) {
     if (isalpha(c)) {
         word[i] = c;
         i++;
@@ -178,7 +174,7 @@ void processInput() {
         word[i] = '\0';
         if (word[0] != '\0') {
             //catch a world
-            char tmp[60];
+            char tmp[70];
             char *out;
             strcpy(tmp, word);
             //condition one
@@ -187,15 +183,15 @@ void processInput() {
                 fprintf(stdout, "%s", out);
             } else {
                 //conditoin two
-                tmp[0] = tolower(tmp[0]);
+                for (int j =1; tmp[j] != '\0'; j++) {
+                        tmp[j] = tolower(tmp[j]);
+                    } 
                 out = findData(dictionary, tmp);
                 if (out != NULL) {
                     fprintf(stdout, "%s", out);
                 } else {
                     //condition three
-                    for (int j =1; tmp[j] != '\0'; j++) {
-                        tmp[j] = tolower(tmp[j]);
-                    } 
+                    tmp[0] = tolower(tmp[0]);
                     out = findData(dictionary, tmp);
                     if (out != NULL) {
                         fprintf(stdout, "%s", out);
@@ -205,13 +201,9 @@ void processInput() {
                     }
                 }
             }
-        i = 0;
-        if (c != EOF) {
-            putchar(c);
-        } else {
-            break;
         }
-      }
+        i = 0;
+        putchar(c);
     }
   }
 }
