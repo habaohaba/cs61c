@@ -245,14 +245,16 @@ class TestClassify(TestCase):
         ref_file = "outputs/test_basic_main/reference0.bin"
         args = ["inputs/simple0/bin/m0.bin", "inputs/simple0/bin/m1.bin",
                 "inputs/simple0/bin/inputs/input0.bin", out_file]
+        t._input_args(args)
+        t.input_scalar("a2", 0)
         # call classify function
         t.call("classify")
         # generate assembly and pass program arguments directly to venus
-        t.execute(args=args)
+        t.execute()
 
         # compare the output file and
-        t.check_stout(2)
-        t.check_file_output(outfile, ref_file)
+        t.check_stdout("2")
+        t.check_file_output(out_file, ref_file)
         # compare the classification output with `check_stdout`
 
     @classmethod
@@ -285,8 +287,9 @@ class TestMain(TestCase):
         reference = f"outputs/test_basic_main/reference{output_id}.bin"
 
         t= AssemblyTest(self, "main.s", no_utils=True)
+        t._input_args(args)
         t.call("main")
-        t.execute(args=args)
+        t.execute()
         t.check_stdout(label)
         t.check_file_output(args[-1], reference)
 

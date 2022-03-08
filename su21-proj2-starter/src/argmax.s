@@ -17,12 +17,12 @@
 argmax:
 
     # Prologue
+    addi sp, sp -4
+    sw s0, 0(sp)
+    
     ebreak
     addi t0, x0, 1
-    bge a1, t0, loop_start # exit program with error code 32 if length of vector less than 1
-    addi a0, x0, 17
-    addi a1, x0, 32
-    ecall
+    blt a1, t0, exit32 # exit program with error code 32 if length of vector less than 1
 
 loop_start:
 	add t0, x0, x0 # element index t0
@@ -33,6 +33,7 @@ loop_continue:
     lw t2, 0(a0) # load current element
     blt  t2, t1, done # jump if less than current largest
     add t1, t2, x0 # update largest number
+    add s0, x0, t0 # save current index
     done:
     addi a0, a0, 4
     addi t0, t0, 1
@@ -40,9 +41,13 @@ loop_continue:
 
 
 loop_end:
-    add a0, x0, t1 # save largest number in a0 to return
+    add a0, x0, s0 # save largest number INDEX in a0 to return
 
     # Epilogue
-
+	lw s0, 0(sp)
+	addi sp, sp, 4
 
     ret
+exit32:
+	addi a1, x0, 32
+    jal exit2

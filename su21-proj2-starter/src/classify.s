@@ -54,13 +54,13 @@ classify:
     jal malloc
     beq a0, x0, exit48 # exit code 48 if malloc fail
     add s0, a0, x0 # parameter: pointer to rows
-    add s6, s0, x0 # save pointer to m0 rows : s6
+    add s6, a0, x0 # save pointer to m0 rows : s6
     addi a0, x0, 4 # malloc 4 bytes
     jal malloc
     beq a0, x0, exit48
     add a1, s0, x0 # parameter: pointer to rows
     add a2, a0, x0 # parameter: pointer to cols
-    add s7, a2, x0 # save pointer to m0 cols : s7
+    add s7, a0, x0 # save pointer to m0 cols : s7
     lw a0, 4(s1) # parameter: pointer to m0_path
 	jal read_matrix # read m0
     add s3, a0, x0 # save pointer to m0: s3
@@ -69,8 +69,8 @@ classify:
 	addi a0, x0, 4 # malloc 4 bytes
     jal malloc
     beq a0, x0, exit48 # exit code 48 if malloc fail
-    add s0, a0, x0 # parameter: pointer to rows
-    add s8, s0, x0 # save pointer to m1 rows : s8
+    add s0, a0, x0 # parameter: pointer to rows : s0
+    add s8, a0, x0 # save pointer to m1 rows : s8
     addi a0, x0, 4 # malloc 4 bytes
     jal malloc
     beq a0, x0, exit48
@@ -141,11 +141,11 @@ classify:
     add a0, s3, x0 # parameter: pointer to m0
     jal matmul # m0 * input
     
-    add a0, a6, x0 # parameter: pointer to hidden
+    lw a0, 36(sp) # parameter: pointer to hidden
     add a1, s0, x0 # elements of output
     jal relu # relu(hidden matrix)
     
-    add a3, a0, x0 # parameter: pointer to hidden
+    lw a3, 36(sp) # parameter: pointer to hidden
     lw a1, 0(s8) # parameter: m1 rows
     lw a2, 0(s9) # parameter: m1 cols
     lw a4, 0(s6) # parameter: hidden rows
