@@ -1,0 +1,14 @@
+
+jalr s1 without store t register
+
+incorrectly offset array address
+
+incorrectly jump recurse
+
+incorrectly load address of next node
+
+incorrectly put function address back to a1
+
+incorrectly load address of array of current node into t1
+
+lose ret

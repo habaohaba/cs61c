@@ -51,6 +51,8 @@ map:
     sw s1, 4(sp)
     sw s0, 8(sp)
 
+start:
+	ebreak
     beq a0, x0, done    # if we were given a null pointer, we're done.
 
     add s0, a0, x0      # save address of this node in s0
@@ -66,27 +68,42 @@ map:
     # are modified by the callees, even when we know the content inside the functions 
     # we call. this is to enforce the abstraction barrier of calling convention.
 mapLoop:
-    add t1, s0, x0      # load the address of the array of current node into t1
+
+    lw t1, 0(s0)        # load the address of the array of current node into t1
     lw t2, 4(s0)        # load the size of the node's array into t2
 
-    add t1, t1, t0      # offset the array address by the count
+	slli t3, t0, 2
+    add t1, t1, t3      # offset the array address by the count
     lw a0, 0(t1)        # load the value at that address into a0
 
+	addi sp, sp, -16
+    sw t0, 0(sp)        # count
+    sw t1, 4(sp)		# element address
+    sw t2, 8(sp)		# size of array
+    sw t3, 12(sp)		# offset bytes
     jalr s1             # call the function on that value.
+    ebreak
+	lw t0, 0(sp)
+    lw t1, 4(sp)
+    lw t2, 8(sp)
+    lw t3, 12(sp)
+    addi sp, sp, 16
 
     sw a0, 0(t1)        # store the returned value back into the array
     addi t0, t0, 1      # increment the count
     bne t0, t2, mapLoop # repeat if we haven't reached the array size yet
 
-    la a0, 8(s0)        # load the address of the next node into a0
-    lw a1, 0(s1)        # put the address of the function back into a1 to prepare for the recursion
+    lw a0, 8(s0)        # load the address of the next node into a0
+    add a1, s1, x0      # put the address of the function back into a1 to prepare for the recursion
 
-    jal  map            # recurse
+    jal  start           # recurse
 done:
     lw s0, 8(sp)
     lw s1, 4(sp)
     lw ra, 0(sp)
     addi sp, sp, 12
+    
+    ret
 
 print_newline:
     li a1, '\n'
