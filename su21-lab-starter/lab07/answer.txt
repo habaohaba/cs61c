@@ -1,0 +1,22 @@
+Exercise 1:
+    Scenario 1:
+        1. Hit rate is 0 because step size is 8 bytes and block size is 8 bytes, so every time we write to cache, we must replace it.
+        2. The hit rate won't increase because we will never hit.
+        3. Make step size less than block size will increase hit rate.
+    Scenario 2:
+        1. There are 2 memory access per iteration.
+        2. mhhh mhhh mhhh mhhh
+        3. 0.75
+        4. 256bytes functions 256bytes 256bytes
+    Scenario 3
+        1. 0.5 0
+        2. 32 16
+        3. 16
+        4. larger L2 block size
+        5. increase number of blocks in L1 : L1 L2 hit rate stay same
+           increase L1 block size : L1 hit rate increase, L2 stay same
+Exercise 2:
+    1. jki kji
+
+Exercise 3:
+    
