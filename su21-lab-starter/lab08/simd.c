@@ -53,8 +53,29 @@ long long int sum_simd(int vals[NUM_ELEMS]) {
 
     for(unsigned int w = 0; w < OUTER_ITERATIONS; w++) {
         /* YOUR CODE GOES HERE */
+        __m128i sum_vec = _mm_setzero_si128(); //sum vector
+        __m128i tmp;
+
+        int *pointer = vals;
+        for(unsigned int i =  0; i < NUM_ELEMS / 4 * 4; i += 4) {
+            tmp = _mm_loadu_si128((__m128i *) pointer);
+            __m128i cmp;
+            cmp = _mm_cmpgt_epi32(tmp, _127);
+            tmp = _mm_and_si128(tmp, cmp); 
+            sum_vec = _mm_add_epi32(tmp, sum_vec);
+            pointer += 4;
+        }
+
+        int inner_loop_result[4];
+        _mm_storeu_si128((__m128i *) inner_loop_result, sum_vec);
+        result += inner_loop_result[0] + inner_loop_result[1] + inner_loop_result[2] + inner_loop_result[3]; 
 
         /* Hint: you'll need a tail case. */
+        for(unsigned int i = NUM_ELEMS / 4 * 4; i < NUM_ELEMS; i++) {
+            if (vals[i] >= 128) {
+                result += vals[i];
+            }    
+        }
     }
 
     /* DO NOT MODIFY ANYTHING BELOW THIS LINE (in this function) */
@@ -72,7 +93,36 @@ long long int sum_simd_unrolled(int vals[NUM_ELEMS]) {
     for(unsigned int w = 0; w < OUTER_ITERATIONS; w++) {
         /* YOUR CODE GOES HERE */
         /* Copy your sum_simd() implementation here, and unroll it */
+        __m128i sum_vec = _mm_setzero_si128(); //sum vector
+        __m128i tmp1;
+        __m128i tmp2;
 
+        int *pointer = vals;
+        for(unsigned int i =  0; i < NUM_ELEMS / 8 * 8; i += 8) {
+            tmp1 = _mm_loadu_si128((__m128i *) pointer);
+            __m128i cmp;
+            cmp = _mm_cmpgt_epi32(tmp1, _127);
+            tmp1 = _mm_and_si128(tmp1, cmp); 
+            sum_vec = _mm_add_epi32(tmp1, sum_vec);
+
+            tmp2 = _mm_loadu_si128((__m128i *) (pointer + 4));
+            cmp = _mm_cmpgt_epi32(tmp2, _127);
+            tmp2 = _mm_and_si128(tmp2, cmp); 
+            sum_vec = _mm_add_epi32(tmp2, sum_vec);
+
+            pointer += 8;
+        }
+
+        int inner_loop_result[4];
+        _mm_storeu_si128((__m128i *) inner_loop_result, sum_vec);
+        result += inner_loop_result[0] + inner_loop_result[1] + inner_loop_result[2] + inner_loop_result[3]; 
+
+        /* Hint: you'll need a tail case. */
+        for(unsigned int i = NUM_ELEMS / 8 * 8; i < NUM_ELEMS; i++) {
+            if (vals[i] >= 128) {
+                result += vals[i];
+            }    
+        }
         /* Hint: you'll need 1 or maybe 2 tail cases here. */
     }
 
