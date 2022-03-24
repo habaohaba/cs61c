@@ -37,8 +37,13 @@ void v_add_optimized_adjacent(double* x, double* y, double* z) {
     // Do NOT use the `for` directive here!
     #pragma omp parallel
     {
-        for(int i=0; i<ARRAY_SIZE; i++)
-            z[i] = x[i] + y[i];
+        int thread = omp_get_thread_num(); // get current thread number
+        int num = omp_get_num_threads(); // number of threads
+        for(int i=0; i<ARRAY_SIZE; i++) {
+            if (i % num == thread) { 
+                z[i] = x[i] + y[i];
+            }
+        }
     }
 }
 
@@ -48,8 +53,18 @@ void v_add_optimized_chunks(double* x, double* y, double* z) {
     // Do NOT use the `for` directive here!
     #pragma omp parallel
     {
-        for(int i=0; i<ARRAY_SIZE; i++)
+        int total = omp_get_num_threads(); // total number of threads
+        int chunk = ARRAY_SIZE / total; // chunk size
+        int last = ARRAY_SIZE % total; // last part
+        int num = omp_get_thread_num(); // current thread number
+        int index_start = num * chunk; 
+        for(int i = 0; i < chunk; i++) {
+            int index = index_start + i;
+            z[index] = x[index] + y[index];
+        } 
+        for (int i = total * chunk; i < ARRAY_SIZE; i++) {
             z[i] = x[i] + y[i];
+        }
     }
 }
 // END PART 1 EX 2
@@ -75,10 +90,13 @@ double dotp_manual_optimized(double* x, double* y, int arr_size) {
     double global_sum = 0.0;
     #pragma omp parallel
     {
+        double sum = 0;
         #pragma omp for
-        for (int i = 0; i < arr_size; i++)
-            #pragma omp critical
-            global_sum += x[i] * y[i];
+        for (int i = 0; i < arr_size; i++) {
+            sum += x[i] * y[i];
+        }
+        #pragma omp critical
+        global_sum += sum;
     }
     return global_sum;
 }
@@ -88,11 +106,10 @@ double dotp_reduction_optimized(double* x, double* y, int arr_size) {
     // TODO: Modify this function
     // Please DO use the `reduction` directive here!
     double global_sum = 0.0;
-    #pragma omp parallel
+    #pragma omp parallel 
     {
-        #pragma omp for
+        #pragma omp for reduction(+:global_sum)
         for (int i = 0; i < arr_size; i++)
-            #pragma omp critical
             global_sum += x[i] * y[i];
     }
     return global_sum;

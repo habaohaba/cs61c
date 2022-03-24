@@ -1,0 +1,2 @@
+chunk version run faster, because it seperate task equally to different hw thread.
+adjacent version do not optimize code, because it donot use cache efficiently. It calsulate each element of vector stepping 16 items.
