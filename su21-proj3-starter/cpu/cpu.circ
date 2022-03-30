@@ -331,12 +331,13 @@
       <a name="label" val="s1"/>
       <a name="width" val="32"/>
     </comp>
-    <comp lib="0" loc="(1490,410)" name="Constant">
-      <a name="value" val="0x0"/>
+    <comp lib="0" loc="(1450,430)" name="Tunnel">
+      <a name="facing" val="east"/>
+      <a name="label" val="write_enable"/>
       <a name="width" val="4"/>
     </comp>
-    <comp lib="0" loc="(1490,430)" name="Constant">
-      <a name="value" val="0xf"/>
+    <comp lib="0" loc="(1490,410)" name="Constant">
+      <a name="value" val="0x0"/>
       <a name="width" val="4"/>
     </comp>
     <comp lib="0" loc="(1500,190)" name="Pin">
@@ -517,10 +518,18 @@
       <a name="label" val="PROGRAM_COUNTER"/>
       <a name="width" val="32"/>
     </comp>
+    <comp lib="0" loc="(400,1160)" name="Tunnel">
+      <a name="facing" val="north"/>
+      <a name="label" val="write_enable"/>
+      <a name="width" val="4"/>
+    </comp>
     <comp lib="0" loc="(450,670)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="INSTRUCTION"/>
       <a name="width" val="32"/>
+    </comp>
+    <comp lib="0" loc="(460,1140)" name="Probe">
+      <a name="facing" val="west"/>
     </comp>
     <comp lib="0" loc="(460,670)" name="Splitter">
       <a name="appear" val="center"/>
@@ -864,8 +873,8 @@
     <wire from="(1410,630)" to="(1410,650)"/>
     <wire from="(1410,750)" to="(1410,780)"/>
     <wire from="(1430,210)" to="(1480,210)"/>
+    <wire from="(1450,430)" to="(1520,430)"/>
     <wire from="(1490,410)" to="(1520,410)"/>
-    <wire from="(1490,430)" to="(1520,430)"/>
     <wire from="(150,630)" to="(150,650)"/>
     <wire from="(150,650)" to="(160,650)"/>
     <wire from="(150,670)" to="(150,680)"/>
@@ -924,6 +933,9 @@
     <wire from="(320,530)" to="(340,530)"/>
     <wire from="(380,240)" to="(380,260)"/>
     <wire from="(380,260)" to="(590,260)"/>
+    <wire from="(400,1120)" to="(400,1140)"/>
+    <wire from="(400,1140)" to="(400,1160)"/>
+    <wire from="(400,1140)" to="(460,1140)"/>
     <wire from="(450,670)" to="(460,670)"/>
     <wire from="(470,760)" to="(500,760)"/>
     <wire from="(480,1010)" to="(480,1060)"/>
