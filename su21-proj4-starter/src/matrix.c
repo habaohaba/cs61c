@@ -220,6 +220,10 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
  * Remember that pow is defined with matrix multiplication, not element-wise multiplication.
  */
 int pow_matrix(matrix *result, matrix *mat, int pow) {
+    //check whether mat is square matrix
+    if (mat->rows != mat->cols) {
+        return 1;
+    }
     //create mid matrix
     matrix mid;
     matrix *mid_pointer = &mid;
@@ -245,6 +249,7 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
             *(one.data + i) = 0;
         }
     }
+    //calculate
     mul_matrix(result, one_pointer, one_pointer);
     for (int i = 0; i < pow; i++) { 
         mul_matrix(mid_pointer, result, one_pointer);
