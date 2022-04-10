@@ -1,16 +1,17 @@
 Exercise 1:
-    1.
-    2.
-    3.
-    4. 
-    5. 
-    6. 
+    1. 5 bits represent offset, so the page size is 32 bytes
+    2. 
+    3. No, because there are only 4 physical memory frame and 4 entry for TLB. TLB does not help address translation.
+    4. 12 8 2 7 11 3 6 5 1 9 10 4 
+    5. PPN 2, VPN 3
+    6. physical pages 4, virtual pages 8
 
 Exercise 2:
-    1.
+    1. 00 20 40 60 80 A0 C0 E0 00 20
 
 Exercise 3:
-    1.
+    1. Physical memory size larger can lower page faults times
+       Page size samller can lower it too
 
 Exercise 4:
-    1.
+    1. 2,3,6
